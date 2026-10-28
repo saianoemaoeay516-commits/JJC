@@ -1,0 +1,1183 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#501b17">
+<title>嫁金钗 · 人生剧本鉴定所</title>
+<style>
+:root{
+  --red:#702a24;
+  --deep:#381713;
+  --brown:#78452e;
+  --gold:#bd8c50;
+  --paper:#f7e9d1;
+  --paper2:#ead1aa;
+  --ink:#482719;
+  --muted:#99765a;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  color:var(--ink);
+  font-family:"Microsoft YaHei","PingFang SC",serif;
+  background:
+    radial-gradient(ellipse at top,#85402e 0%,transparent 55%),
+    linear-gradient(135deg,#321410,#65271e 50%,#2c100e);
+  min-height:100vh;
+}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid #e5bd75;outline-offset:3px}
+button:disabled{opacity:.4;cursor:not-allowed}
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex;flex-direction:column}
+button,.btn{
+  border:1px solid #c99c62;
+  border-radius:30px;
+  color:#fff0d0;
+  background:linear-gradient(135deg,#8d4030,#54201b);
+  box-shadow:0 4px 12px #3b171633,inset 0 1px #ffffff20;
+  padding:12px 22px;
+}
+button:active{transform:scale(.98)}
+/* 开场 */
+#intro{
+  justify-content:center;
+  align-items:center;
+  padding:24px 16px;
+  position:relative;
+  overflow:hidden;
+  text-align:center;
+  background:
+    radial-gradient(ellipse at 50% 20%,#9a5535 0%,transparent 50%),
+    linear-gradient(180deg,#431a15,#702e23 60%,#35130f);
+  color:#f7e5c5;
+}
+#intro:before,#intro:after{
+  content:"❀";
+  position:absolute;
+  font-size:120px;
+  color:#e6bd7c20;
+  pointer-events:none;
+}
+#intro:before{top:3%;left:-20px}
+#intro:after{bottom:3%;right:-10px}
+.intro-inner{width:min(100%,520px);position:relative;z-index:1}
+.seal{
+  display:inline-block;
+  border:2px solid #d8ac71;
+  color:#e7bd7e;
+  padding:6px 13px;
+  letter-spacing:4px;
+  font-size:12px;
+  transform:rotate(-4deg);
+}
+.intro-title{
+  font-size:clamp(38px,9vw,62px);
+  letter-spacing:5px;
+  line-height:1.35;
+  margin:24px 0 4px;
+  text-shadow:0 3px 0 #3d160f,0 0 24px #edc58c35;
+}
+.intro-sub{font-size:clamp(20px,5vw,28px);color:#e8c28d}
+.intro-desc{line-height:2;color:#e8d1b2;font-size:14px;margin:24px auto}
+.intro-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin:25px 0}
+.intro-tags span{
+  border:1px solid #c89c6655;border-radius:20px;padding:7px 12px;
+  font-size:12px;color:#f0d6ac;background:#ffffff08
+}
+.intro-btn{font-size:19px;letter-spacing:3px;padding:15px 38px;margin-top:10px}
+.intro-footer{font-size:11px;color:#caa88a;margin-top:35px}
+.loading{display:none;margin-top:25px}
+.loading-track{height:5px;background:#ffffff24;border-radius:9px;overflow:hidden;margin:12px 0}
+.loading-bar{height:100%;width:0;background:#e3bc7e;transition:width .25s}
+.loading-text{font-size:13px;color:#ecd0a8;line-height:2}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .6s ease both}
+/* 答题 */
+#quiz{padding:14px 12px 30px;align-items:center}
+.quiz-wrap{width:min(100%,680px)}
+.topbar{
+  color:#f0d8b3;display:flex;align-items:center;justify-content:space-between;
+  padding:10px 4px 16px;font-size:12px;letter-spacing:1px
+}
+.brand-small{font-size:17px;color:#e6c18a}
+.progress-track{height:5px;background:#ffffff25;border-radius:8px;overflow:hidden;margin:0 0 14px}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#b87c42,#efd19a);transition:width .3s}
+.paper{
+  position:relative;background:
+    radial-gradient(ellipse at 10% 10%,#fff9e8aa,transparent 40%),
+    repeating-linear-gradient(0deg,#f7e9d1 0,#f7e9d1 4px,#f4e3c9 5px);
+  border:1px solid #d5ad78;border-radius:10px;
+  box-shadow:0 10px 35px #16080560,inset 0 0 0 5px #e9d0a9;
+  padding:clamp(18px,5vw,34px);
+}
+.paper:before{
+  content:"";position:absolute;inset:8px;border:1px solid #cba77880;
+  pointer-events:none;border-radius:5px
+}
+.chapter{color:#8e4a31;font-size:12px;letter-spacing:2px;margin-bottom:13px}
+.question-title{font-size:clamp(23px,6vw,31px);line-height:1.5;margin:0 0 15px;color:#63291f}
+.question-desc{font-size:15px;line-height:2;color:#593b2a;white-space:pre-line;margin:0 0 20px}
+.question-ask{font-size:13px;color:#a06c43;margin-bottom:12px}
+.options{display:grid;gap:11px}
+.option{
+  display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;
+  border:1px solid #cba477;border-radius:8px;padding:13px 13px;
+  background:#fff8e9c9;color:#553423;box-shadow:none;
+  transition:background .2s,border-color .2s;
+}
+.option .letter{
+  flex:none;display:flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border-radius:50%;background:#78402c;color:#f8e4c2;
+  font-family:serif;font-weight:bold
+}
+.option .option-text{font-size:14px;line-height:1.8;flex:1}
+.option.selected{background:#ead0a7;border:2px solid #8d422e;padding:12px}
+.option.selected .letter{background:#a72f25}
+.quiz-nav{display:flex;gap:12px;justify-content:space-between;margin-top:20px}
+.quiz-nav button{min-width:115px}
+.quiz-note{text-align:center;color:#d5b18a;font-size:11px;line-height:1.8;margin-top:17px}
+#loadingScreen{align-items:center;justify-content:center;text-align:center;padding:25px;color:#f3dfbd}
+.loading-seal{font-size:46px;margin-bottom:20px}
+#loadingScreen h2{letter-spacing:4px;font-size:26px}
+.loading-list{display:grid;gap:13px;text-align:left;width:min(100%,330px);margin:30px auto;color:#e5c8a2;font-size:14px}
+.loading-list span:before{content:"◇";color:#e5b86c;margin-right:12px}
+/* 结果 */
+#resultScreen{padding:12px 10px 35px;align-items:center}
+.result-wrap{width:min(100%,1000px);background:var(--paper);border:3px solid #c99a61;box-shadow:0 15px 45px #16080577;position:relative}
+.result-wrap:before{content:"";position:absolute;inset:7px;border:1px solid #c59a68;pointer-events:none;z-index:1}
+.result-header{
+  text-align:center;padding:22px 15px 16px;
+  background:linear-gradient(135deg,#ead0a7,#f9edda,#e8cba1);
+  border-bottom:1px solid #caa174;position:relative
+}
+.result-brand{font-size:13px;letter-spacing:3px;color:#8e5335}
+.result-brand strong{font-size:27px;letter-spacing:2px;color:#67271d;display:block;margin:5px 0}
+.result-subtitle{font-size:12px;color:#946b48}
+.result-body{padding:15px;position:relative;z-index:2}
+.result-hero{
+  display:grid;grid-template-columns:minmax(95px,190px) 1fr;gap:17px;align-items:center;
+  border-bottom:1px solid #cba77c;padding:12px 0 20px
+}
+.portrait-placeholder{
+  width:100%;aspect-ratio:1/1;border-radius:50%;
+  border:5px solid #d6b27c;background:#e9d3b0;
+  box-shadow:inset 0 0 0 2px #f9edda;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  color:#a17b55;font-size:12px;line-height:1.8;padding:12px
+}
+.result-eyebrow{font-size:12px;color:#95623e}
+.result-name{font-size:clamp(22px,5vw,35px);line-height:1.5;color:#8b3026;margin:7px 0;font-weight:bold}
+.character-name{font-size:18px;color:#75432d;margin:5px 0 9px}
+.result-sentence{font-size:14px;line-height:1.9;color:#573522}
+.pass-stamp{
+  display:inline-block;border:3px double #a83b2c;color:#a83b2c;
+  padding:7px 10px;font-weight:bold;letter-spacing:3px;transform:rotate(7deg);
+  margin-top:10px;font-size:12px
+}
+.result-grid{display:grid;grid-template-columns:1fr 1.18fr;gap:14px;margin-top:16px}
+.left-col,.right-col{min-width:0}
+.section-card{
+  border:1px solid #d3b18a;border-radius:9px;padding:14px;
+  background:#fff6e6a0;margin-bottom:13px
+}
+.section-title{
+  font-size:18px;color:#63351f;margin:0 0 13px;
+  border-bottom:1px solid #d9bc98;padding-bottom:8px
+}
+.radar-wrap{width:100%;max-width:340px;margin:auto}
+#radar{width:100%;height:auto;display:block}
+.radar-labels{display:none}
+.attribute-list{display:grid;gap:10px;margin-top:10px}
+.attr-head{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.attr-track{height:6px;border-radius:10px;background:#e4cfaf;overflow:hidden}
+.attr-fill{height:100%;background:linear-gradient(90deg,#a53f2f,#c98459);border-radius:10px}
+.verdict{
+  background:linear-gradient(135deg,#f4dfbd,#e9cda0);
+  border:1px solid #c99d69;padding:18px;border-radius:9px;
+  font-size:14px;line-height:2;white-space:pre-line
+}
+.verdict p{margin:0 0 9px}
+.verdict p:last-child{margin:0}
+.verdict .verdict-sign{color:#9d392b;text-align:right;font-weight:bold}
+.chat-panel{
+  border:1px solid #d0ad84;border-radius:10px;overflow:hidden;
+  background:linear-gradient(180deg,#f1e3d0,#f8eee0)
+}
+.chat-head{padding:12px;background:#ead4b5;border-bottom:1px solid #d4b28a;display:flex;align-items:center;gap:10px}
+.chat-avatar{
+  width:39px;height:39px;border-radius:50%;border:2px solid #c59a65;
+  background:#e3c8a4;display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:#83593a;flex:none
+}
+.chat-name{font-size:14px;font-weight:bold}
+.chat-status{font-size:11px;color:#99785b;margin-top:3px}
+.chat-more{margin-left:auto;color:#9e8063}
+.chat-messages{padding:13px 10px;display:flex;flex-direction:column;gap:13px}
+.chat-row{display:flex;gap:7px;align-items:flex-start;max-width:95%}
+.chat-row.user{align-self:flex-end;flex-direction:row-reverse}
+.chat-row .mini-avatar{
+  flex:none;width:29px;height:29px;border-radius:50%;background:#d7b58c;
+  border:1px solid #bd986b;display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:#73442b
+}
+.bubble{padding:9px 11px;border-radius:4px;background:#fffdf8;border:1px solid #e6d8c5;font-size:13px;line-height:1.8;white-space:pre-line;overflow-wrap:anywhere}
+.chat-row.user .bubble{background:#c8e7a7;border-color:#b3d58f}
+.chat-time{font-size:9px;color:#b29a7f;margin-top:3px}
+.chat-row.user .chat-time{text-align:right}
+.bottom-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
+.mini-card{border:1px solid #d2ad80;border-radius:8px;padding:12px;background:#fff5e3;min-width:0}
+.mini-card h3{font-size:15px;margin:0 0 10px;color:#75452b}
+.mini-card p{font-size:12px;line-height:1.9;margin:0;white-space:pre-line;overflow-wrap:anywhere}
+.mini-card .small-quote{font-size:13px;font-weight:bold;color:#7b3025}
+.result-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;padding:18px 10px 12px}
+.result-actions button{font-size:13px;padding:12px 17px}
+.footer-note{text-align:center;font-size:11px;color:#a28161;padding:0 10px 16px}
+.toast{
+  position:fixed;left:50%;bottom:25px;transform:translateX(-50%);
+  background:#3c1b15;color:#f8e4c3;padding:12px 18px;border-radius:30px;
+  box-shadow:0 4px 20px #0004;font-size:13px;z-index:99;
+  opacity:0;pointer-events:none;transition:opacity .25s
+}
+.toast.show{opacity:1}
+@media(min-width:700px){
+  #quiz{padding-top:25px}
+  .question-desc{font-size:16px}
+  .option .option-text{font-size:15px}
+  .result-body{padding:24px}
+  .result-grid{gap:20px}
+  .section-card{padding:20px}
+  .chat-messages{padding:18px;gap:16px}
+  .bubble{font-size:14px;padding:11px 13px}
+}
+@media(max-width:560px){
+  #resultScreen{padding:6px 4px 20px}
+  .result-header{padding:18px 10px 12px}
+  .result-brand strong{font-size:23px}
+  .result-body{padding:10px}
+  .result-hero{grid-template-columns:100px 1fr;gap:12px}
+  .portrait-placeholder{font-size:10px;border-width:3px}
+  .result-name{font-size:22px}
+  .character-name{font-size:16px}
+  .result-sentence{font-size:12px}
+  .result-grid{grid-template-columns:1fr;gap:0}
+  .left-col{display:grid;grid-template-columns:1fr;gap:0}
+  .bottom-cards{grid-template-columns:1fr}
+  .mini-card{padding:14px}
+  .mini-card h3{font-size:16px}
+  .mini-card p{font-size:13px}
+  .result-actions{gap:7px;padding:15px 3px}
+  .result-actions button{padding:11px 12px;font-size:12px}
+  .section-card{padding:12px}
+  .chat-messages{padding:12px 8px}
+  .bubble{font-size:12px}
+  .quiz-nav button{min-width:0;flex:1;padding:12px 10px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+@media print{
+  body{background:white}
+  #intro,#quiz,#loadingScreen,.result-actions,.toast{display:none!important}
+  #resultScreen{display:block!important;padding:0}
+  .result-wrap{width:100%;box-shadow:none;border:1px solid #bd966a}
+  .result-wrap:before{display:none}
+  .result-grid{grid-template-columns:1fr 1.1fr}
+  .bottom-cards{grid-template-columns:repeat(3,1fr)}
+  .result-body{padding:10px}
+  .chat-panel,.section-card,.mini-card,.verdict{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== 开场 ==================== -->
+<section id="intro" class="screen active">
+  <div class="intro-inner">
+    <div class="seal">人生剧本鉴定所 · 特别企划</div>
+    <div class="intro-title">嫁金钗</div>
+    <div class="intro-sub">人生剧本鉴定所</div>
+    <p class="intro-desc">
+      如果你也身处一场命运棋局，<br>
+      你会是执棋的人，破局的人，还是被迫入局的人？<br>
+      十五道情境题，鉴定你的专属命格。
+    </p>
+    <div class="intro-tags">
+      <span>性格洞察</span><span>宅斗生存</span>
+      <span>人情博弈</span><span>爱情选择</span>
+    </div>
+    <button class="intro-btn" id="startBtn" onclick="startLoading()">✦ 开始鉴定 ✦</button>
+    <div class="loading" id="introLoading">
+      <div class="loading-text" id="introLoadingText">正在核验入局身份……</div>
+      <div class="loading-track"><div class="loading-bar" id="introBar"></div></div>
+    </div>
+    <div class="intro-footer">原创趣味测试 · 非剧集官方互动产品</div>
+  </div>
+</section>
+
+<!-- ==================== 答题 ==================== -->
+<section id="quiz" class="screen">
+  <div class="quiz-wrap">
+    <div class="topbar">
+      <span class="brand-small">嫁金钗 · 人生剧本鉴定所</span>
+      <span id="questionCount">第 1 题 / 共 15 题</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="paper fade-up" id="questionPaper">
+      <div class="chapter" id="chapterName">第一幕：命运初局</div>
+      <h1 class="question-title" id="questionTitle"></h1>
+      <p class="question-desc" id="questionDesc"></p>
+      <div class="question-ask">你会怎么做？</div>
+      <div class="options" id="options"></div>
+    </div>
+    <div class="quiz-nav">
+      <button id="prevBtn" onclick="previousQuestion()">← 上一题</button>
+      <button id="nextBtn" onclick="nextQuestion()" disabled>下一题 →</button>
+    </div>
+    <div class="quiz-note">答案没有标准对错 · 请按第一反应选择<br>所有选择都会参与命格匹配</div>
+  </div>
+</section>
+
+<!-- ==================== 分析动画 ==================== -->
+<section id="loadingScreen" class="screen">
+  <div>
+    <div class="loading-seal">✧</div>
+    <h2>正在推演你的命格</h2>
+    <p style="color:#d9b58b;line-height:2">命运落子，皆有缘由。<br>正在整理你的选择与处事倾向……</p>
+    <div class="loading-track" style="width:min(80vw,340px);margin:25px auto">
+      <div class="loading-bar" id="resultBar"></div>
+    </div>
+    <div class="loading-list">
+      <span>分析谋略与行动倾向</span>
+      <span>计算清醒与共情属性</span>
+      <span>评估个人边界感</span>
+      <span>匹配最接近的命格原型</span>
+    </div>
+    <div id="loadingPercent" style="color:#e4bf87">0%</div>
+  </div>
+</section>
+
+<!-- ==================== 结果页 ==================== -->
+<section id="resultScreen" class="screen">
+  <div class="result-wrap" id="resultCard">
+    <header class="result-header">
+      <div class="result-brand">
+        <strong>嫁金钗</strong>
+        人生剧本鉴定所
+      </div>
+      <div class="result-subtitle">你的性格 × 宅斗力 × 生存力 × 爱情观</div>
+    </header>
+
+    <div class="result-body">
+      <div class="result-hero">
+        <!-- 真人头像预留位置：这里不放图片代码，可自行添加 -->
+        <div class="portrait-placeholder">
+          真人头像<br>预留位置<br><span style="font-size:10px">自行添加图片</span>
+        </div>
+        <div>
+          <div class="result-eyebrow">你的命格是</div>
+          <div class="result-name" id="resultTitle">全府最不好惹的打工人</div>
+          <div class="character-name" id="resultCharacter">对应人物：魏娆（阿丑）</div>
+          <div class="result-sentence" id="resultSlogan"></div>
+          <div class="pass-stamp">鉴定通过</div>
+        </div>
+      </div>
+
+      <div class="result-grid">
+        <div class="left-col">
+          <div class="section-card">
+            <h2 class="section-title">你的八项命格倾向</h2>
+            <div class="radar-wrap">
+              <canvas id="radar" width="500" height="450" aria-label="八项命格倾向图"></canvas>
+            </div>
+            <div class="attribute-list" id="attributeList"></div>
+          </div>
+
+          <div class="verdict">
+            <h2 class="section-title">命格批注</h2>
+            <div id="verdictText"></div>
+            <p class="verdict-sign">—— 人生剧本鉴定所</p>
+          </div>
+        </div>
+
+        <div class="right-col">
+          <div class="chat-panel">
+            <div class="chat-head">
+              <div class="chat-avatar" id="chatHeadAvatar">人物</div>
+              <div>
+                <div class="chat-name" id="chatHeadName">命格本人</div>
+                <div class="chat-status">在线 · 正在观察你的命运</div>
+              </div>
+              <div class="chat-more">•••</div>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-cards">
+        <div class="mini-card">
+          <h3>✿ 专属名场面</h3>
+          <p id="sceneText"></p>
+        </div>
+        <div class="mini-card">
+          <h3>⚠ 危险提示</h3>
+          <p id="dangerText"></p>
+        </div>
+        <div class="mini-card">
+          <h3>✦ 人格金句</h3>
+          <p class="small-quote" id="quoteText"></p>
+        </div>
+      </div>
+
+      <div class="result-actions">
+        <button onclick="restartTest()">↻ 重新测一次</button>
+        <button onclick="copyShare()">☷ 复制分享文案</button>
+        <button onclick="saveResult()">↓ 保存结果卡</button>
+      </div>
+      <div class="footer-note">嫁金钗 · 人生剧本鉴定所<br>原创趣味测试 · 非剧集官方互动产品</div>
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+/*
+ * 八属性累计计分：
+ * 每道题每个选项分别给八种行为倾向加分，不再使用五维距离。
+ * 结果根据八项倾向的归一化得分与人物权重计算匹配分。
+ * 计分描述的是本测试中的行为倾向，不是对剧中人物的官方评价。
+ */
+const ATTRIBUTES = [
+  "自主破局", "身份争胜", "证据求真", "亲情护控",
+  "长线布局", "体面掌控", "现实取舍", "适应忠诚"
+];
+const LETTERS = ["A","B","C","D"];
+
+// 每个选项的 s 顺序对应 ATTRIBUTES；分数为本题行为倾向的加分，不是好坏评价。
+const QUESTIONS = [
+{
+ chapter:"第一幕：命运初局",
+ title:"新婚当夜，世子醒了",
+ desc:"你原本以为这场冲喜婚事只是走个过场，没想到昏迷已久的世子竟然醒了。他看着你，接连问了几个关于新娘过去经历的问题，明显对你的身份有所怀疑。\n\n你会怎么做？",
+ options:[
+  {text:"先稳住场面，回答得滴水不漏，同时观察他真正想确认什么。",s:[1,0,1,0,2,2,1,1]},
+  {text:"不愿一直被人安排，试着和他谈清彼此的处境，争取主动权。",s:[3,0,1,0,0,0,1,1]},
+  {text:"先不急着解释，把他问过的问题记下来，分辨哪些是事实、哪些是试探。",s:[0,0,3,0,2,1,1,0]},
+  {text:"先解决眼前最容易暴露的破绽，确保自己能安全度过今晚。",s:[3,0,1,0,1,0,1,2]}
+ ]
+},
+{
+ chapter:"第一幕：命运初局",
+ title:"主母开始观察你了",
+ desc:"成婚几日后，府中主母没有直接为难你，却开始留意你的言行、待人方式和处事分寸。她既没有明确表示接纳，也没有告诉你究竟在考察什么。\n\n你觉得最稳妥的做法是什么？",
+ options:[
+  {text:"先摸清府中的规矩和人情往来，别因为不懂规则把自己困住。",s:[1,0,1,0,1,1,1,3]},
+  {text:"礼数做到位，但不靠讨好换认可；别人怎么评价，不决定我是谁。",s:[2,1,0,0,0,1,1,0]},
+  {text:"观察她对不同人的态度，弄清她真正看重什么，再决定如何应对。",s:[0,0,2,0,3,2,1,0]},
+  {text:"把自己该做的事情办好，用稳定表现建立立足之地。",s:[2,0,0,0,1,0,1,3]}
+ ]
+},
+{
+ chapter:"第一幕：命运初局",
+ title:"一场家宴，座次有讲究",
+ desc:"英国公府设宴，席位安排看似寻常，实际上每个位置都代表着身份、亲疏和家族关系。有人特意把你安排在一个容易引起议论的位置，似乎在等你反应。\n\n你会怎么做？",
+ options:[
+  {text:"先看清全场安排，判断这是无心疏忽、有人试探，还是刻意给我难堪。",s:[0,1,2,0,3,1,1,0]},
+  {text:"当场提出调整。位置可以商量，但我不接受别人默认我该低人一等。",s:[3,3,0,0,0,1,0,0]},
+  {text:"先不让对方看出我在意，记下安排者和受益者，等更合适的时机再处理。",s:[0,1,1,0,3,3,1,0]},
+  {text:"先顾全宴席上的关系，避免无辜的人被卷进来，宴后再私下谈清楚。",s:[1,0,0,2,0,1,2,1]}
+ ]
+},
+{
+ chapter:"第一幕：命运初局",
+ title:"府中传出一桩不利于你的流言",
+ desc:"有人私下议论你的来历，说法越传越离谱。你不知道最初是谁说的，也不清楚对方究竟想达到什么目的。流言暂时还没闹到长辈面前。\n\n你会怎么处理？",
+ options:[
+  {text:"追查消息从哪里传出、经过了哪些人，先把来龙去脉弄清楚。",s:[0,0,3,0,2,1,1,0]},
+  {text:"找关键人物当面谈清楚，不让别人以为我默认了这些说法。",s:[3,2,1,0,0,1,0,0]},
+  {text:"暂时不急着自证，先观察流言会影响谁、谁在借题发挥，再决定反击方式。",s:[1,1,2,0,3,2,1,0]},
+  {text:"先提醒身边可信的人谨慎行事，别让无辜的人因为我的处境受到牵连。",s:[1,0,0,3,0,0,1,2]}
+ ]
+},
+{
+ chapter:"第二幕：人情与暗流",
+ title:"有人想借你的名义办一件事",
+ desc:"一位府中亲眷想借你的名义向长辈求情。她说事情不大，只需要你出面说几句话，却始终不肯把全部缘由告诉你。若事情闹大，你也可能被牵连。\n\n你会怎么做？",
+ options:[
+  {text:"先问清楚事情经过。连发生了什么都不知道，就让我替你担名声？",s:[0,0,3,0,1,1,2,0]},
+  {text:"直接拒绝。既然不肯说清楚，就不能要求我替你承担后果。",s:[3,1,0,0,0,1,1,0]},
+  {text:"先弄清她真正想得到什么、谁会从中获利，再决定是否出面。",s:[0,1,2,0,3,2,2,0]},
+  {text:"如果她确实遇到难处，我愿意在能力范围内帮忙，但必须先说清边界。",s:[1,0,1,2,0,0,2,2]}
+ ]
+},
+{
+ chapter:"第二幕：人情与暗流",
+ title:"一份迟来的礼物",
+ desc:"你在意的人此前一直没有解释某件让你不舒服的事，今天却突然送来一份贵重礼物。对方没有提起之前的问题，只说了一句：“我知道你喜欢这个。”礼物可能是真心，也可能是想把事情翻篇。\n\n你会怎么做？",
+ options:[
+  {text:"先收下心意，但把之前的问题说清楚；礼物不能代替解释。",s:[1,0,1,1,0,1,2,0]},
+  {text:"当面问明白，不想靠猜测维持关系，也不接受用礼物堵住我的嘴。",s:[3,1,1,0,0,1,1,0]},
+  {text:"先不急着下结论，观察对方之后的行动是否和说法一致。",s:[0,0,3,0,2,1,1,0]},
+  {text:"先了解对方为什么这样做，给解释留空间，但不会因此放弃自己的判断。",s:[1,0,1,2,0,0,2,1]}
+ ]
+},
+{
+ chapter:"第二幕：人情与暗流",
+ title:"你发现一件可能改变家族关系的秘密",
+ desc:"你偶然发现一条重要线索，它可能关系到家族成员之间的旧事。证据还不完整，贸然公开可能伤及无辜；但完全不管，又可能让问题继续埋着。有人似乎已经察觉你发现了线索。\n\n你会怎么做？",
+ options:[
+  {text:"先补齐证据。线索再惊人，也不能把猜测直接当成真相。",s:[0,0,3,0,2,0,1,0]},
+  {text:"找当事人私下谈，给对方解释的机会，也观察他面对问题时的反应。",s:[1,0,1,2,1,1,1,0]},
+  {text:"先评估公开后谁会得利、谁会受伤，以及有没有人正在利用这件事。",s:[0,1,2,0,3,2,2,0]},
+  {text:"先保护可能被牵连的人，同时保留线索，避免真相没查清就造成二次伤害。",s:[1,0,1,3,1,0,2,1]}
+ ]
+},
+{
+ chapter:"第二幕：人情与暗流",
+ title:"两边都说自己受了委屈",
+ desc:"府里两位关系亲近的人发生争执，都来找你评理。一个与你交情深，一个在家族中更有地位，两边都希望你明确站在自己这边。你知道，无论怎么选，都会有人不高兴。\n\n你会怎么做？",
+ options:[
+  {text:"分别听双方说法，找能够核实的事实，不因谁更亲近或地位更高就先下结论。",s:[0,0,3,1,1,0,2,0]},
+  {text:"不接受被迫站队。我可以帮忙解决问题，但不会因为关系就替谁背书。",s:[2,1,1,0,0,1,1,0]},
+  {text:"先判断这场争执背后有没有利益冲突，避免自己被当成别人布局的一环。",s:[0,1,2,0,3,2,2,0]},
+  {text:"先让双方冷静下来，尤其照顾处境更弱的一方，再谈责任与解决办法。",s:[0,0,0,3,0,0,2,2]}
+ ]
+},
+{
+ chapter:"第二幕：人情与暗流",
+ title:"家人希望你为家族利益牺牲自己的选择",
+ desc:"家里认为某个决定对整个家族有利，希望你答应一桩自己并不愿意接受的安排。长辈强调：“一家人，理应互相成全。”你知道拒绝会让亲人失望，答应又可能改变自己往后的人生。\n\n你会怎么做？",
+ options:[
+  {text:"先算清双方要付出的代价，弄明白所谓家族利益究竟由谁获得、由谁承担。",s:[0,1,2,0,2,1,3,0]},
+  {text:"明确说出自己的决定。尊重长辈不等于把一生交出去代管。",s:[3,2,0,0,0,1,1,0]},
+  {text:"提出替代方案，尽量解决家里的难题，但不接受只有我牺牲这一种答案。",s:[2,1,1,1,1,0,3,0]},
+  {text:"认真听家人的顾虑。如果确实有人陷入困境，我愿意考虑帮忙，但不会无条件答应。",s:[1,0,0,3,0,0,3,1]}
+ ]
+},
+{
+ chapter:"第三幕：危机与反击",
+ title:"你终于抓住了一个翻身的机会",
+ desc:"你一直处于不利的位置，现在终于出现一次改变处境的机会。成功后，你可能获得选择权；失败后，也可能失去眼下仅有的安稳。身边的人对这件事各有盘算。\n\n你会怎么选？",
+ options:[
+  {text:"先准备退路和备用方案，弄清最坏结果，再决定什么时候出手。",s:[1,0,2,0,3,0,2,0]},
+  {text:"主动争取。机会不会永远等人，我宁愿承担风险，也不想继续被动。",s:[3,2,0,0,0,0,1,1]},
+  {text:"先判断这是不是别人设好的局，谁会因此获利，代价是否值得。",s:[0,1,3,0,3,1,3,0]},
+  {text:"找真正可信的人商量，确认彼此的目标和底线后，再决定是否一起行动。",s:[1,0,1,2,1,0,2,2]}
+ ]
+},
+{
+ chapter:"第三幕：危机与反击",
+ title:"有人把你的功劳说成了自己的",
+ desc:"你花了很大力气完成一件重要的事，结果有人在长辈面前把功劳揽到了自己身上。此事会影响接下来谁获得信任、资源和更好的位置。周围人暂时还不知道真相。\n\n你会怎么做？",
+ options:[
+  {text:"先整理证据和事情经过，弄清谁在场、哪些记录能证明事实。",s:[0,1,3,0,2,1,1,0]},
+  {text:"当面澄清，不让别人靠抢功得到本不属于他的地位。",s:[2,3,1,0,0,1,0,0]},
+  {text:"先看清对方是否有意争夺位置，再选择能改变后续规则的方式处理。",s:[0,2,2,0,3,2,2,0]},
+  {text:"找合适时机说明事实，同时考虑如何避免其他无辜的人被卷入争执。",s:[1,1,1,2,1,1,2,1]}
+ ]
+},
+{
+ chapter:"第三幕：危机与反击",
+ title:"计划突然失控，所有人都等你拿主意",
+ desc:"一件关系到府中重要安排的事突然出了岔子：关键消息可能泄露，有人慌了，有人互相埋怨，还有人急着把责任推给别人。你只有很短的时间决定先做什么。\n\n你会怎么做？",
+ options:[
+  {text:"先判断哪条信息最关键、谁掌握了什么，再安排下一步。",s:[0,0,3,0,3,1,1,0]},
+  {text:"先行动控制局面，抢在事情彻底失控前把最急的风险压下来。",s:[3,1,0,0,1,0,1,2]},
+  {text:"先稳住相关的人，分清谁需要保护、谁该承担责任，避免慌乱扩大伤害。",s:[1,0,0,3,0,1,2,2]},
+  {text:"如果原计划已经无法挽回，就及时止损，放弃面子和沉没成本。",s:[2,0,2,0,1,0,3,1]}
+ ]
+},
+{
+ chapter:"第三幕：危机与反击",
+ title:"有人希望你帮忙隐瞒一个错误",
+ desc:"一个与你关系不错的人做错了事，事情尚未造成无法挽回的后果。他希望你暂时帮忙隐瞒，理由是只要撑过这次，以后就不会再犯。但若真相暴露，可能会有人替他承担责任。\n\n你会怎么做？",
+ options:[
+  {text:"先查清事实和可能造成的后果，不因关系好就跳过判断。",s:[0,0,3,0,1,0,2,0]},
+  {text:"明确拒绝替他撒谎。我可以帮忙补救，但不能替他编造另一个问题。",s:[2,1,2,0,0,1,2,0]},
+  {text:"先协助控制损失，再要求他承担应有责任，不能让无辜的人替他买单。",s:[2,1,1,1,1,0,3,1]},
+  {text:"弄清他为什么犯错、是否受到胁迫；可以帮助解决困难，但不会纵容反复隐瞒。",s:[1,0,1,3,0,0,2,2]}
+ ]
+},
+{
+ chapter:"第四幕：你的终局剧本",
+ title:"有人当众讽刺你‘命真好’",
+ desc:"一场宴席上，有人笑着说：“你可真是命好，什么好事都让你赶上了。”对方说得客气，语气却明显带刺。周围的人都听见了，而这句话似乎还影射着你如今拥有的身份与位置。\n\n你会怎么做？",
+ options:[
+  {text:"先判断对方是在挑衅、试探，还是想借我引出别人的反应。",s:[0,1,2,0,3,2,1,0]},
+  {text:"当场回敬。既然话已经递到面前，我不必假装听不懂。",s:[2,3,0,0,0,1,0,0]},
+  {text:"礼貌结束话题，不在众人面前失态，但会留意这句话背后的利益关系。",s:[0,1,1,0,2,3,1,0]},
+  {text:"用玩笑化解眼前的尴尬，同时观察在场人的反应，记下真正需要留意的人。",s:[1,1,1,1,2,2,1,1]}
+ ]
+},
+{
+ chapter:"第四幕：你的终局剧本",
+ title:"如果可以亲手改写自己的人生",
+ desc:"假如你终于有机会重新选择接下来的人生，但这一次没有完美答案：争取自由可能让亲人失望，揭开真相可能打破现有关系，保住地位也可能要付出代价。你必须先决定最不能放弃的是什么。\n\n你会怎么选？",
+ options:[
+  {text:"先把命运握回自己手里。即使处境不利，也要找到真正能改变现状的办法。",s:[3,1,0,0,1,0,2,1]},
+  {text:"不能接受自己应得的位置被夺走。我会争取属于自己的身份、尊严和选择权。",s:[1,3,0,0,1,2,1,0]},
+  {text:"我想弄清事实和代价，再做决定；不愿为了眼前痛快毁掉更重要的未来。",s:[0,0,3,0,2,1,3,0]},
+  {text:"我想在复杂环境里保住重要的人，也逐渐找到不违背自己原则的活法。",s:[1,0,0,3,0,0,2,3]}
+ ]
+}
+];
+
+/*
+ * 八种结果原型。weights 对应 ATTRIBUTES 的顺序，数字越大表示该倾向
+ * 对该人物结果的解释力越强。它们是测评设计参数，不是剧中官方评分。
+ */
+const RESULTS = [
+{
+ id:"wei-rao", title:"全府最不好惹的打工人", character:"魏娆（阿丑）",
+ weights:[3,0,1,0,2,0,2,1],
+ slogan:"你不是天生的赢家，只是不肯把自己的命运交给别人决定。",
+ verdict:[
+  "你最突出的不是逞强，而是在不利处境里寻找能改变局面的出口。",
+  "你可以暂时忍耐，却不愿把选择权永久交给别人；必要时会先行动，再边走边修正。",
+  "你擅长自救，但别把‘凡事只能靠自己’变成唯一的生存规则。"
+ ],
+ scene:"别人问你：“你打算怎么熬过这一关？”\n你先把眼前的麻烦一件件处理掉，再抽空研究怎么把整盘棋走回来。",
+ danger:"独立是你的本事，不是必须独自承担一切的判决。遇到值得信任的人，也可以让对方与你并肩。",
+ quote:"“我的人生，不需要别人代为签收。”",
+ chat:[
+  ["other","听说你最近又遇到麻烦了？"],["user","算不上麻烦，只是生活又来催项目进度。"],
+  ["other","你不打算先等等看？"],["user","可以等，但我得先知道出口在哪。"],
+  ["other","那如果没有出口呢？"],["user","那就先找把能拆墙的工具。"]
+ ]
+},
+{
+ id:"jun-dai", title:"身份焦虑型全场主角", character:"君黛",
+ weights:[0,3,0,1,0,2,1,0],
+ slogan:"你可以不赢一时，但很难接受自己被人随手拿走本该属于你的东西。",
+ verdict:[
+  "你对位置、尊严和他人如何看待自己非常敏感，不愿轻易交出已经拥有的优势。",
+  "面对竞争，你会主动争取，也容易把局势理解成一场不能输的较量。",
+  "真正需要留意的是：别让害怕失去，变成不断伤害关系的理由。"
+ ],
+ scene:"有人说：“何必那么在意别人怎么看？”\n你点头微笑，回去却把所有可能影响自己位置的细节重新梳理了一遍。",
+ danger:"维护尊严没有错，但不是每一次退让都意味着失败，也不是每一个竞争者都想夺走你的人生。",
+ quote:"“我的位置，我自己守。”",
+ chat:[
+  ["other","有人说你太在意输赢。"],["user","我只是不喜欢别人替我决定输赢。"],
+  ["other","如果有一天你真的输了呢？"],["user","那我会先弄清楚输在哪里。"],
+  ["other","然后呢？"],["user","该争取的重新争取，不该拿命换的就不换。"]
+ ]
+},
+{
+ id:"lu-zhuo", title:"全府唯一反诈中心", character:"陆濯",
+ weights:[0,0,3,0,2,1,2,0],
+ slogan:"不是我不相信人，我只是希望相信之前先看一下事实。",
+ verdict:[
+  "你不太容易被一句承诺说服，更在意信息是否可靠、行为是否前后一致。",
+  "遇到复杂局面，你习惯先核实再判断，不愿让猜测替代证据。",
+  "谨慎能帮你避坑，但也要记得：信任可以经过验证逐步建立，不必永远停留在审查阶段。"
+ ],
+ scene:"别人说：“你相信我一次。”\n你回答：“可以，先把事情经过说完整。”对方突然发现，这不是一句话就能结束的谈话。",
+ danger:"别把每段关系都变成审讯。真正有效的核实，是把疑问讲清楚，而不是默默把所有人都判成可疑。",
+ quote:"“信任可以慢慢给，证据最好一次到位。”",
+ chat:[
+  ["other","如果有人说他真的很在乎你呢？"],["user","我会看他怎么做，而不只听他怎么说。"],
+  ["other","你谈关系怎么像查案？"],["user","因为事实和承诺最好能对得上。"],
+  ["other","那你什么时候才会相信？"],["user","当行动持续一致，而不是只在需要我的时候一致。"]
+ ]
+},
+{
+ id:"wei-heng-e", title:"全府最强护犊子", character:"魏恒娥",
+ weights:[0,1,0,3,0,2,1,1],
+ slogan:"我会护着自己在乎的人，但也得先弄清楚究竟发生了什么。",
+ verdict:[
+  "你对亲近的人投入很深，一旦他们受到威胁，你很难袖手旁观。",
+  "你容易把保护理解成替对方挡下一切，甚至想直接替他们决定什么才是最好的。",
+  "亲情可以成为行动的理由，却不能自动证明所有手段都合理。"
+ ],
+ scene:"朋友刚说自己受了委屈，你已经准备去问清楚来龙去脉。\n你愿意帮忙，但最好先把事情讲完整——护短不等于闭眼。",
+ danger:"保护别人之前先听完事实。真正的支持，是帮对方承担困难，而不是替对方夺走选择权。",
+ quote:"“我的人我来护，但我的判断也得讲道理。”",
+ chat:[
+  ["other","如果你最在乎的人受了委屈呢？"],["user","我会先问清楚发生了什么。"],
+  ["other","如果真的是他做错了呢？"],["user","那我会帮他面对，而不是把错说成对。"],
+  ["other","这也算护短？"],["user","当然。帮他改正，比帮他逃避更有用。"]
+ ]
+},
+{
+ id:"guo-yu-feng", title:"全府最会装没事的人", character:"郭虞凤",
+ weights:[0,1,2,0,3,2,1,0],
+ slogan:"不是我没有意见，我只是在等信息够了、时机也到了。",
+ verdict:[
+  "你不急着亮出所有想法，习惯先观察关系、收集信息，再决定何时行动。",
+  "你擅长把眼前的事放进更长的局面里看，也懂得沉默有时是一种主动选择。",
+  "但别让等待时机变成被旧怨牵着走；掌握局势，不等于必须控制每一个人。"
+ ],
+ scene:"全场都在争论，你暂时没有表态。\n等大家说完，你已经分清哪些是事实、哪些是情绪，以及谁最希望别人先犯错。",
+ danger:"别把沉默当成万能策略。需要表态时就表态，也要警惕自己是否只是在等待报复的机会。",
+ quote:"“我不是没出手，我是在等这一手值得。”",
+ chat:[
+  ["other","你刚才为什么一直没说话？"],["user","因为我还没听完。"],
+  ["other","现在听完了呢？"],["user","现在我知道哪些信息还缺，哪些人已经急了。"],
+  ["other","那你准备怎么办？"],["user","先确认关键事实，再决定这一步值不值得走。"]
+ ]
+},
+{
+ id:"wei-shu", title:"笑着递刀的体面人", character:"魏姝",
+ weights:[0,2,1,0,2,3,1,0],
+ slogan:"场面可以给足，利益和底线不能糊涂。",
+ verdict:[
+  "你重视表达分寸和外在体面，通常不会在没有必要的时候把冲突闹到台面上。",
+  "你会考虑局势、后果与自己的利益，倾向于用克制、间接的方式推进事情。",
+  "你的优势是懂得留余地；风险是把每次沟通都当成博弈，让别人难以判断你的真实想法。"
+ ],
+ scene:"你微笑着说：“我理解。”\n等对方松了口气，你又补充：“不过这件事还是按说好的规矩处理。”",
+ danger:"体面是表达方式，不是免于承担责任的保护罩。能坦诚说清楚的问题，不必绕三圈才开口。",
+ quote:"“体面是礼貌，边界是原则。”",
+ chat:[
+  ["other","你是不是不高兴了？"],["user","我更想先把事情处理好。"],
+  ["other","你怎么突然这么客气？"],["user","因为客气不影响我把规则说清楚。"],
+  ["other","听起来有点吓人。"],["user","不用怕，标准是公开的，谁来都一样。"]
+ ]
+},
+{
+ id:"zhou-fu", title:"人生从不提供标准答案", character:"周芙（丽昭仪）",
+ weights:[1,0,1,1,0,0,3,1],
+ slogan:"每条路都有代价，所以重要的不是假装没有代价，而是认真选择。",
+ verdict:[
+  "你会考虑现实条件，也愿意承认亲情、责任和个人选择之间并不总有完美答案。",
+  "你能理解不同人的处境，必要时会做出不讨好所有人的取舍。",
+  "理解别人不代表必须替别人承担全部后果，也别因为一直权衡而忘记自己真正想要什么。"
+ ],
+ scene:"别人问你：“为什么不选最简单的路？”\n你回答：“因为简单不一定适合，正确也不代表毫无代价。”",
+ danger:"现实判断不是冷漠，重视亲情也不等于必须牺牲自己。做选择时，把自己的需要也放进账本。",
+ quote:"“我可以理解你的难处，但我也有自己的人生。”",
+ chat:[
+  ["other","如果两个选择都会让人难过呢？"],["user","我会想清楚自己愿意承担哪一种后果。"],
+  ["other","没有不伤人的办法吗？"],["user","有时没有，但至少可以诚实，不把选择伪装成命运。"],
+  ["other","这样不会很累吗？"],["user","会。所以更要想清楚，别把人生随手交给别人决定。"]
+ ]
+},
+{
+ id:"bi-tao", title:"全府最强职场变形金刚", character:"碧桃",
+ weights:[2,0,1,1,1,0,1,3],
+ slogan:"环境可以变，判断也可以成长，但每一步都要知道自己为什么走。",
+ verdict:[
+  "你适应新环境的速度很快，会先看懂规则、判断处境，再寻找可行的路。",
+  "你不只会服从安排；当经历和关系改变了你的判断，你也有机会重新选择自己的立场。",
+  "真正重要的是，别为了适应所有环境而放弃原则，也别忘了自己有权决定何时不再服从。"
+ ],
+ scene:"刚入局时，你还在问规矩是什么。\n过了一阵子，别人开始来问你该怎么处理，而你也终于知道哪些规矩值得遵守、哪些选择应该由自己作出。",
+ danger:"适应力不是没有立场。提前想清楚哪些事绝不妥协，才能在复杂环境里保留自己。",
+ quote:"“我可以随机应变，但不能随机丢掉原则。”",
+ chat:[
+  ["other","你怎么这么快就适应了新环境？"],["user","先看规则，再看人，最后看自己能做什么。"],
+  ["other","如果规则本身不合理呢？"],["user","先判断能不能改变；如果不能，就得重新考虑自己要走哪条路。"],
+  ["other","你倒是越来越有主意了。"],["user","因为适应环境，不代表永远只能听别人的。"]
+ ]
+}
+];
+
+let currentQuestion=0;
+let answers=Array(QUESTIONS.length).fill(null);
+let finalResult=null;
+let finalScores=null;
+
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function startLoading(){
+  const btn=document.getElementById("startBtn");
+  btn.disabled=true;
+  document.getElementById("introLoading").style.display="block";
+  const texts=[
+    "正在核验入局身份……",
+    "正在读取人情关系图谱……",
+    "正在加载命格档案……",
+    "身份核验完成，欢迎入局。"
+  ];
+  let progress=0;
+  const bar=document.getElementById("introBar");
+  const label=document.getElementById("introLoadingText");
+  const timer=setInterval(()=>{
+    progress+=5+Math.random()*9;
+    if(progress>=100)progress=100;
+    bar.style.width=progress+"%";
+    label.textContent=texts[Math.min(3,Math.floor(progress/26))];
+    if(progress>=100){
+      clearInterval(timer);
+      setTimeout(()=>{
+        currentQuestion=0;
+        answers=Array(QUESTIONS.length).fill(null);
+        renderQuestion();
+        showScreen("quiz");
+        btn.disabled=false;
+      },450);
+    }
+  },150);
+}
+
+function renderQuestion(){
+  const q=QUESTIONS[currentQuestion];
+  document.getElementById("questionCount").textContent=
+    `第 ${currentQuestion+1} 题 / 共 ${QUESTIONS.length} 题`;
+  document.getElementById("progressFill").style.width=
+    `${(currentQuestion/QUESTIONS.length)*100}%`;
+  document.getElementById("chapterName").textContent=q.chapter;
+  document.getElementById("questionTitle").textContent=`第 ${currentQuestion+1} 题｜${q.title}`;
+  document.getElementById("questionDesc").textContent=q.desc;
+
+  const options=document.getElementById("options");
+  options.innerHTML="";
+  q.options.forEach((option,index)=>{
+    const button=document.createElement("button");
+    button.type="button";
+    button.className="option"+(answers[currentQuestion]===index?" selected":"");
+    button.setAttribute("aria-pressed",answers[currentQuestion]===index?"true":"false");
+    const letter=document.createElement("span");
+    letter.className="letter";
+    letter.textContent=LETTERS[index];
+    const text=document.createElement("span");
+    text.className="option-text";
+    text.textContent=option.text;
+    button.append(letter,text);
+button.addEventListener("click", function () {
+  if (button.disabled) return;
+
+  // 保存当前题目的答案
+  answers[currentQuestion] = index;
+
+  // 标记已选选项，并禁止重复点击
+  const allButtons = options.querySelectorAll(".option");
+
+  allButtons.forEach(function (item) {
+    item.classList.remove("selected");
+    item.disabled = true;
+  });
+
+  button.classList.add("selected");
+
+  // 同步更新下一题按钮状态
+  const next = document.getElementById("nextBtn");
+  next.disabled = false;
+
+  // 稍作停顿，再进入下一题
+  setTimeout(function () {
+    if (currentQuestion >= QUESTIONS.length - 1) {
+      calculateResult();
+      return;
+    }
+
+    currentQuestion++;
+    renderQuestion();
+
+    document.getElementById("quiz").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }, 180);
+});
+    options.appendChild(button);
+  });
+
+  document.getElementById("prevBtn").disabled=currentQuestion===0;
+  const next=document.getElementById("nextBtn");
+  next.disabled=answers[currentQuestion]===null;
+  next.textContent=currentQuestion===QUESTIONS.length-1?"揭晓我的命格 ✦":"下一题 →";
+
+  const paper=document.getElementById("questionPaper");
+  paper.classList.remove("fade-up");
+  void paper.offsetWidth;
+  paper.classList.add("fade-up");
+}
+
+function previousQuestion(){
+  if(currentQuestion>0){
+    currentQuestion--;
+    renderQuestion();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+}
+
+function nextQuestion(){
+  if(answers[currentQuestion]===null)return;
+  if(currentQuestion<QUESTIONS.length-1){
+    currentQuestion++;
+    renderQuestion();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }else{
+    beginResultAnalysis();
+  }
+}
+
+function calculateScores(){
+  // 累计用户实际选择的八项倾向；分母按每道题该属性可获得的最高分计算。
+  const total=Array(ATTRIBUTES.length).fill(0);
+  const max=Array(ATTRIBUTES.length).fill(0);
+  QUESTIONS.forEach((q,qi)=>{
+    for(let d=0;d<ATTRIBUTES.length;d++){
+      max[d]+=Math.max(...q.options.map(option=>option.s[d]));
+    }
+    const selected=answers[qi];
+    if(selected!==null && q.options[selected]){
+      q.options[selected].s.forEach((value,d)=>{total[d]+=value;});
+    }
+  });
+  return total.map((value,d)=>max[d] ? Math.round(value/max[d]*100) : 0);
+}
+
+function findBestResult(scores){
+  /*
+   * 八属性加权匹配。
+   * 先按随机选项压力测试得到的基线均值/波动范围标准化，减少某些属性
+   * 因题目天然容易得分而长期压过其他属性的情况；再按人物权重计算匹配分。
+   * 这组基线是算法校准参数，不代表真实用户结果概率，也不保证八类完全均分。
+   */
+  const baselineMean=[44.1,42.0,47.6,29.7,46.2,48.2,73.4,35.6];
+  const baselineStd =[10.4,10.9,9.3,12.2,10.6,9.6,7.3,12.0];
+  const normalized=scores.map((value,i)=>(value-baselineMean[i])/(baselineStd[i]||1));
+  // 小幅先验校准来自随机选项压力测试，目的是减少某一结果天然占优；
+  // 偏置幅度很小，实际选择仍主要由用户的八项倾向决定。
+  const resultBias=[0.919,0.074,-0.616,0.108,-0.081,0.059,0.498,-0.318];
+  let best=null;
+  let bestScore=-Infinity;
+  let bestStrong=-Infinity;
+  RESULTS.forEach((result,resultIndex)=>{
+    const weightMean=result.weights.reduce((sum,w)=>sum+w,0)/result.weights.length;
+    let match=0,strong=0;
+    result.weights.forEach((weight,i)=>{
+      const centeredWeight=weight-weightMean;
+      match+=normalized[i]*centeredWeight;
+      if(weight>=2)strong+=normalized[i];
+    });
+    match+=resultBias[resultIndex];
+    if(match>bestScore || (Math.abs(match-bestScore)<0.0001 && strong>bestStrong)){
+      bestScore=match;
+      bestStrong=strong;
+      best=result;
+    }
+  });
+  return best;
+}
+
+function beginResultAnalysis(){
+  finalScores=calculateScores();
+  finalResult=findBestResult(finalScores);
+  showScreen("loadingScreen");
+  const bar=document.getElementById("resultBar");
+  const percent=document.getElementById("loadingPercent");
+  let p=0;
+  const timer=setInterval(()=>{
+    p=Math.min(100,p+Math.ceil(Math.random()*12));
+    bar.style.width=p+"%";
+    percent.textContent=p+"%";
+    if(p>=100){
+      clearInterval(timer);
+      setTimeout(()=>{
+        renderResult(finalResult,finalScores);
+        showScreen("resultScreen");
+      },500);
+    }
+  },170);
+}
+
+function addChatMessage(container,type,text,index){
+  const row=document.createElement("div");
+  row.className="chat-row"+(type==="user"?" user":"");
+  const avatar=document.createElement("div");
+  avatar.className="mini-avatar";
+  avatar.textContent=type==="user"?"你":"人物";
+  const content=document.createElement("div");
+  const bubble=document.createElement("div");
+  bubble.className="bubble";
+  bubble.textContent=text;
+  const time=document.createElement("div");
+  time.className="chat-time";
+  time.textContent=`14:${String(8+index*2).padStart(2,"0")}`;
+  content.append(bubble,time);
+  row.append(avatar,content);
+  container.appendChild(row);
+}
+
+function renderResult(result,scores){
+  document.getElementById("resultTitle").textContent=result.title;
+  document.getElementById("resultCharacter").textContent="对应人物："+result.character;
+  document.getElementById("resultSlogan").textContent=result.slogan;
+  document.getElementById("chatHeadName").textContent=result.character;
+  document.getElementById("chatHeadAvatar").textContent=result.character.slice(0,2);
+
+  const verdict=document.getElementById("verdictText");
+  verdict.innerHTML="";
+  result.verdict.forEach(line=>{
+    const p=document.createElement("p");
+    p.textContent=line;
+    verdict.appendChild(p);
+  });
+
+  document.getElementById("sceneText").textContent=result.scene;
+  document.getElementById("dangerText").textContent=result.danger;
+  document.getElementById("quoteText").textContent="“"+result.quote.replace(/[“”]/g,"")+"”";
+
+  const list=document.getElementById("attributeList");
+  list.innerHTML="";
+  ATTRIBUTES.forEach((name,i)=>{
+    const item=document.createElement("div");
+    const head=document.createElement("div");
+    head.className="attr-head";
+    const label=document.createElement("span");
+    label.textContent=name;
+    const value=document.createElement("span");
+    value.textContent=scores[i];
+    head.append(label,value);
+    const track=document.createElement("div");
+    track.className="attr-track";
+    const fill=document.createElement("div");
+    fill.className="attr-fill";
+    fill.style.width=scores[i]+"%";
+    track.appendChild(fill);
+    item.append(head,track);
+    list.appendChild(item);
+  });
+
+  const chat=document.getElementById("chatMessages");
+  chat.innerHTML="";
+  result.chat.forEach((message,i)=>{
+    addChatMessage(chat,message[0],message[1],i);
+  });
+  drawRadar(scores);
+}
+
+function drawRadar(scores){
+  const canvas=document.getElementById("radar");
+  const ctx=canvas.getContext("2d");
+  const w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  const cx=w/2,cy=h/2+4;
+  const radius=137;
+  const n=ATTRIBUTES.length;
+  const angles=Array.from({length:n},(_,i)=>-Math.PI/2+i*2*Math.PI/n);
+
+  // 保留原有古风配色与雷达图样式，只将维度扩展为八项。
+  for(let level=1;level<=5;level++){
+    const r=radius*level/5;
+    ctx.beginPath();
+    angles.forEach((angle,i)=>{
+      const x=cx+Math.cos(angle)*r;
+      const y=cy+Math.sin(angle)*r;
+      if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+    });
+    ctx.closePath();
+    ctx.strokeStyle=level===5?"#b58a61":"#d7b896";
+    ctx.lineWidth=level===5?2:1;
+    ctx.stroke();
+  }
+
+  angles.forEach((angle,i)=>{
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+Math.cos(angle)*radius,cy+Math.sin(angle)*radius);
+    ctx.strokeStyle="#c5a17b";
+    ctx.lineWidth=1;
+    ctx.stroke();
+    const labelRadius=radius+25;
+    const x=cx+Math.cos(angle)*labelRadius;
+    const y=cy+Math.sin(angle)*labelRadius;
+    ctx.fillStyle="#70452e";
+    ctx.font="bold 13px Microsoft YaHei, sans-serif";
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.fillText(ATTRIBUTES[i],x,y);
+  });
+
+  ctx.beginPath();
+  scores.forEach((score,i)=>{
+    const r=radius*Math.max(0,Math.min(100,score))/100;
+    const x=cx+Math.cos(angles[i])*r;
+    const y=cy+Math.sin(angles[i])*r;
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  });
+  ctx.closePath();
+  ctx.fillStyle="rgba(160,52,39,.48)";
+  ctx.strokeStyle="#9c3529";
+  ctx.lineWidth=3;
+  ctx.fill();
+  ctx.stroke();
+  scores.forEach((score,i)=>{
+    const r=radius*Math.max(0,Math.min(100,score))/100;
+    const x=cx+Math.cos(angles[i])*r;
+    const y=cy+Math.sin(angles[i])*r;
+    ctx.beginPath();
+    ctx.arc(x,y,4,0,Math.PI*2);
+    ctx.fillStyle="#8c3027";
+    ctx.fill();
+    ctx.strokeStyle="#f6e7ce";
+    ctx.lineWidth=2;
+    ctx.stroke();
+  });
+}
+function restartTest(){
+  currentQuestion=0;
+  answers=Array(QUESTIONS.length).fill(null);
+  finalResult=null;
+  finalScores=null;
+  showScreen("quiz");
+  renderQuestion();
+}
+
+function buildShareText(){
+  if(!finalResult)return "";
+  return `我在《嫁金钗》· 人生剧本鉴定所测出了自己的命格！\n\n【${finalResult.title}】\n对应人物：${finalResult.character}\n\n${finalResult.slogan}\n\n我的命格倾向：\n${ATTRIBUTES.map((d,i)=>d+"："+finalScores[i]).join("｜")}\n\n你在这场命运棋局里会是谁？来测测你的专属人生剧本！\n（原创趣味测试，非剧集官方产品）`;
+}
+
+async function copyShare(){
+  const text=buildShareText();
+  if(!text)return;
+  try{
+    if(navigator.clipboard&&window.isSecureContext){
+      await navigator.clipboard.writeText(text);
+    }else{
+      const area=document.createElement("textarea");
+      area.value=text;
+      area.style.position="fixed";
+      area.style.left="-9999px";
+      document.body.appendChild(area);
+      area.select();
+      const ok=document.execCommand("copy");
+      area.remove();
+      if(!ok)throw new Error("copy failed");
+    }
+    showToast("分享文案已复制，快去分享你的命格！");
+  }catch(e){
+    showToast("浏览器限制了自动复制，请手动复制结果文字。");
+    window.prompt("请复制以下分享文案：",text);
+  }
+}
+
+function saveResult(){
+  /*
+   * 无需外部图片库的本地保存方案：
+   * 调用浏览器打印对话框，选择“另存为 PDF”即可保存整张结果卡。
+   * 如果以后需要一键 PNG，可再添加 html2canvas。
+   */
+  showToast("正在打开保存界面，请选择“另存为 PDF”保存结果卡。");
+  setTimeout(()=>window.print(),350);
+}
+
+let toastTimer=null;
+function showToast(text){
+  const toast=document.getElementById("toast");
+  toast.textContent=text;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toast.classList.remove("show"),2600);
+}
+
+// 初始状态
+renderQuestion();
+</script>
+</body>
+</html>
